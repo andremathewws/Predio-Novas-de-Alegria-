@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nova Casa, Novas Alegrias... Mesmo Propósito!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#F3F5FA;--ink:#1B2540;--mute:#5B6684;--card:#FFFFFF;--line:#DCE1EE;--gold:#D9930D;--gold2:#F2C14E;--shape:#CBD3E6;--door:#F3F5FA}
+@media (prefers-color-scheme:dark){:root{--bg:#111729;--ink:#EEF1F8;--mute:#9AA5C4;--card:#1B2440;--line:#2C3759;--shape:#2E3A60;--door:#111729;--gold:#F2B33D}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.05rem/1.5 "Source Sans 3",system-ui,sans-serif}
+h1,h2,.big{font-family:"Bricolage Grotesque","Source Sans 3",sans-serif;margin:0}
+main{max-width:960px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800}
+.sub{color:var(--mute);margin:2px 0 0}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px}
+button.primary{background:var(--gold);border-color:var(--gold);color:#1B1300;font-weight:600}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+.hero{display:grid;grid-template-columns:minmax(150px,260px) 1fr;gap:28px;align-items:center;margin:28px 0 20px}
+@media(max-width:600px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.hero svg{width:100%;max-width:260px;height:auto}
+.big{font-size:clamp(3.4rem,12vw,6.5rem);font-weight:800;line-height:1;color:var(--gold)}
+.raised{font-size:1.35rem;font-weight:600;margin-top:6px}
+.bar{height:16px;border-radius:99px;background:var(--shape);overflow:hidden;margin:14px 0 6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .9s ease}
+.joy{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:10px;padding:16px 18px;margin:0 0 20px}
+.joy h2{font-size:1.1rem;margin-bottom:4px}
+.joy p{margin:0;font-size:1.15rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{display:block;font:800 1.5rem "Bricolage Grotesque",sans-serif}
+.stat span{color:var(--mute);font-size:.95rem}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:20px}
+section.card h2{font-size:1.15rem;margin-bottom:10px}
+.chart{overflow-x:auto}
+.chart svg{width:100%;min-width:480px;height:auto;display:block}
+.chart text{fill:var(--mute);font:12px "Source Sans 3",sans-serif}
+.empty{color:var(--mute)}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;align-items:end}
+label{display:grid;gap:4px;font-size:.95rem;color:var(--mute)}
+input,textarea{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.wide{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+.hidden{display:none}
+.note{color:var(--mute);font-size:.9rem;margin:10px 0 0}
+.err{color:#C0392B}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <h1>Nova Casa, Novas Alegrias... Mesmo Propósito!</h1>
+    <p class="sub" id="sub">Carregando...</p>
+  </div>
+  <button id="toggle" type="button">Tesouraria</button>
+</header>
+
+<div class="hero">
+  <svg viewBox="0 0 200 230" role="img" aria-label="Igreja sendo preenchida conforme a arrecadação">
+    <defs><clipPath id="shape"><path d="M30 210V120L100 82L170 120V210Z"/><path d="M82 90V48L100 30L118 48V90Z"/></clipPath></defs>
+    <g clip-path="url(#shape)">
+      <rect x="0" y="0" width="200" height="230" fill="var(--shape)"/>
+      <rect id="fill" x="0" y="210" width="200" height="0" fill="var(--gold)"/>
+    </g>
+    <path d="M100 6V28M91 15H109" stroke="var(--gold)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M88 210V176A12 12 0 0 1 112 176V210Z" fill="var(--door)"/>
+  </svg>
+  <div>
+    <div class="big" id="pct">0%</div>
+    <div class="raised" id="raised"></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><i id="barfill" style="width:0"></i></div>
+    <div class="sub" id="goalline"></div>
+  </div>
+</div>
+
+<div class="joy">
+  <h2 id="joyTitle">Igreja Novas de Alegria</h2>
+  <p id="joyText"></p>
+</div>
+
+<div class="stats">
+  <div class="stat"><b id="sWeek">—</b><span>arrecadado na última semana</span></div>
+  <div class="stat"><b id="sLeft">—</b><span>ainda falta</span></div>
+  <div class="stat"><b id="sWeeks">—</b><span>semanas até a data final</span></div>
+  <div class="stat"><b id="sNeed">—</b><span>por semana para chegar lá</span></div>
+</div>
+
+<section class="card">
+  <h2>Caminhada semana a semana</h2>
+  <div class="chart" id="chart"></div>
+</section>
+
+<section class="card hidden" id="login">
+  <h2>Entrar na tesouraria</h2>
+  <form id="loginForm">
+    <label>E-mail<input type="email" id="lEmail" autocomplete="username" required></label>
+    <label>Senha<input type="password" id="lPass" autocomplete="current-password" required></label>
+    <button class="primary" type="submit">Entrar</button>
+  </form>
+  <p class="note err" id="lMsg"></p>
+</section>
+
+<section class="card hidden" id="admin">
+  <h2 id="formTitle">Lançar semana</h2>
+  <form id="form">
+    <label>Data (fim da semana)<input type="date" id="fDate" required></label>
+    <label>Valor arrecadado (R$)<input type="number" id="fVal" min="0" step="0.01" required></label>
+    <label class="wide">Origem / observação (só a tesouraria vê)<input id="fNote" placeholder="Ex.: ofertas dos cultos + rifa dos jovens"></label>
+    <label class="wide">Igreja Novas de Alegria (aparece na apresentação)<textarea id="fJoy" rows="2" placeholder="Ex.: Uma família entregou o 13º para a campanha!"></textarea></label>
+    <button class="primary" type="submit" id="fBtn">Salvar semana</button>
+    <button type="button" id="fCancel" class="hidden">Cancelar edição</button>
+  </form>
+  <div class="tw" style="margin-top:16px"><table id="tbl"></table></div>
+
+  <h2 style="margin-top:22px">Campanha</h2>
+  <form id="cfg">
+    <label>Meta (R$)<input type="number" id="cGoal" min="1" step="1"></label>
+    <label>Data final<input type="date" id="cEnd"></label>
+    <label>Já arrecadado antes do 1º lançamento (R$)<input type="number" id="cOpen" min="0" step="0.01"></label>
+    <button type="submit">Salvar campanha</button>
+  </form>
+  <p class="note" id="aMsg"></p>
+  <p><button type="button" id="logout">Sair da tesouraria</button></p>
+</section>
+</main>
+
+<script>
+/* ===== PREENCHA ESTES DOIS VALORES (veja o LEIA-ME) ===== */
+const SUPABASE_URL = "https://frsssvctouktdyzxrhmc.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_Yrxjh42LeH_j5JgWtefVMg_9Dhf_gJc";
+/* ======================================================== */
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+const brl = n => (n || 0).toLocaleString("pt-BR", {style: "currency", currency: "BRL"});
+const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const fmtD = d => d.split("-").reverse().join("/");
+let C = {goal: 100000, end_date: "2026-12-31", opening: 0}, E = [], notes = {}, user = null, editId = null;
+
+async function load() {
+  const [c, e] = await Promise.all([
+    db.from("campaign").select("*").eq("id", 1).single(),
+    db.from("entries").select("*").order("week_date")
+  ]);
+  if (c.error || e.error) { const er = c.error || e.error; $("sub").innerHTML = '<span class="err">Não foi possível carregar os dados. Detalhe técnico: ' + esc(er.message || er.code || "sem detalhe") + '</span>'; return; }
+  C = {goal: +c.data.goal, end_date: c.data.end_date, opening: +c.data.opening};
+  E = e.data.map(x => ({...x, value: +x.value}));
+  notes = {};
+  if (user) { const n = await db.from("entry_notes").select("*"); (n.data || []).forEach(r => notes[r.entry_id] = r.note); }
+  render();
+}
+
+function render() {
+  const es = E, total = C.opening + es.reduce((t, e) => t + e.value, 0);
+  const pct = Math.min(100, total / C.goal * 100), left = Math.max(0, C.goal - total);
+  const days = Math.ceil((new Date(C.end_date + "T23:59:59") - new Date()) / 864e5);
+  const weeks = Math.max(0, Math.ceil(days / 7)), last = es[es.length - 1];
+  $("sub").textContent = "Meta de " + brl(C.goal) + " até " + fmtD(C.end_date);
+  $("pct").textContent = Math.floor(pct) + "%";
+  $("raised").textContent = brl(total) + " arrecadados";
+  $("barfill").style.width = pct + "%";
+  $("bar").setAttribute("aria-valuenow", Math.round(pct));
+  $("goalline").textContent = left > 0 ? "Faltam " + brl(left) + " para a meta" : "Meta alcançada!";
+  const h = 190 * pct / 100;
+  $("fill").setAttribute("y", 210 - h); $("fill").setAttribute("height", h);
+  $("sWeek").textContent = last ? brl(last.value) : "—";
+  $("sLeft").textContent = brl(left);
+  $("sWeeks").textContent = days > 0 ? weeks : "0";
+  $("sNeed").textContent = left <= 0 ? "—" : (weeks > 0 ? brl(left / weeks) : "Prazo encerrado");
+  const marco = pct >= 100 ? "Conseguimos! O prédio é nosso. Glória a Deus!" : pct >= 75 ? "Mais de 75%! A reta final chegou." : pct >= 50 ? "Passamos da metade! Deus tem sido fiel." : pct >= 25 ? "Chegamos a 25%! Seguimos juntos." : "Cada oferta é um tijolo. Vamos construir juntos.";
+  const hasJoy = last && last.joy;
+  $("joyTitle").textContent = hasJoy ? "Igreja Novas de Alegria · semana de " + fmtD(last.week_date) : "Igreja Novas de Alegria";
+  $("joyText").innerHTML = hasJoy ? esc(last.joy) + '<br><small style="color:var(--mute)">' + esc(marco) + "</small>" : esc(marco);
+  drawChart(es);
+  if (user) { drawTable(es); if (!$("cfg").contains(document.activeElement)) { $("cGoal").value = C.goal; $("cEnd").value = C.end_date; $("cOpen").value = C.opening; } }
+}
+
+function drawChart(es) {
+  const el = $("chart");
+  if (!es.length) { el.innerHTML = '<p class="empty">Os lançamentos semanais vão aparecer aqui.</p>'; return; }
+  const v = es.slice(-12); let acc = C.opening + es.slice(0, es.length - v.length).reduce((t, e) => t + e.value, 0);
+  const W = 640, H = 240, pl = 8, pr = 8, top = 26, bot = 30, cw = (W - pl - pr) / v.length, bw = Math.min(46, cw * .6);
+  const y = n => top + (H - top - bot) * (1 - Math.min(n, C.goal) / C.goal);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Acumulado por semana">`;
+  s += `<line x1="0" x2="${W}" y1="${y(C.goal)}" y2="${y(C.goal)}" stroke="var(--gold)" stroke-dasharray="5 5"/><text x="${W - 4}" y="${y(C.goal) - 5}" text-anchor="end">Meta ${brl(C.goal)}</text>`;
+  v.forEach((e, i) => {
+    acc += e.value; const x = pl + cw * i + (cw - bw) / 2, yy = y(acc);
+    s += `<rect x="${x}" y="${yy}" width="${bw}" height="${H - bot - yy}" rx="4" fill="var(--gold)" opacity=".9"/>`;
+    s += `<text x="${x + bw / 2}" y="${H - 10}" text-anchor="middle">${e.week_date.slice(8)}/${e.week_date.slice(5, 7)}</text>`;
+    s += `<text x="${x + bw / 2}" y="${Math.max(yy - 5, 14)}" text-anchor="middle" style="fill:var(--ink)">+${Math.round(e.value).toLocaleString("pt-BR")}</text>`;
+  });
+  el.innerHTML = s + "</svg>";
+}
+
+function drawTable(es) {
+  $("tbl").innerHTML = es.length ? "<tr><th>Data</th><th>Valor</th><th>Observação</th><th></th></tr>" + [...es].reverse().map(e =>
+    `<tr><td>${fmtD(e.week_date)}</td><td>${brl(e.value)}</td><td>${esc(notes[e.id])}</td><td style="white-space:nowrap"><button type="button" data-edit="${e.id}">Editar</button> <button type="button" data-del="${e.id}">Excluir</button></td></tr>`).join("") : "";
+}
+
+function msg(t, bad) { $("aMsg").textContent = t; $("aMsg").className = "note" + (bad ? " err" : ""); }
+function resetForm() { editId = null; $("form").reset(); $("fDate").value = new Date().toISOString().slice(0, 10); $("formTitle").textContent = "Lançar semana"; $("fBtn").textContent = "Salvar semana"; $("fCancel").classList.add("hidden"); }
+
+function setUser(u) {
+  user = u;
+  $("login").classList.add("hidden");
+  $("admin").classList.toggle("hidden", !u);
+  $("toggle").textContent = u ? "Tesouraria (aberta)" : "Tesouraria";
+}
+
+$("toggle").addEventListener("click", () => {
+  if (user) { $("admin").classList.toggle("hidden"); return; }
+  $("login").classList.toggle("hidden");
+});
+
+$("loginForm").addEventListener("submit", async ev => {
+  ev.preventDefault(); $("lMsg").textContent = "";
+  const {data, error} = await db.auth.signInWithPassword({email: $("lEmail").value.trim(), password: $("lPass").value});
+  if (error) { $("lMsg").textContent = "Não foi possível entrar. Detalhe técnico: " + (error.message || "sem detalhe"); return; }
+  $("lPass").value = ""; setUser(data.user); load();
+});
+
+$("logout").addEventListener("click", async () => { await db.auth.signOut(); setUser(null); notes = {}; render(); });
+
+$("form").addEventListener("submit", async ev => {
+  ev.preventDefault(); msg("Salvando...");
+  const row = {week_date: $("fDate").value, value: parseFloat($("fVal").value) || 0, joy: $("fJoy").value.trim() || null};
+  let id = editId, err;
+  if (id) { ({error: err} = await db.from("entries").update(row).eq("id", id)); }
+  else { const r = await db.from("entries").insert(row).select().single(); err = r.error; if (!err) id = r.data.id; }
+  if (!err) { ({error: err} = await db.from("entry_notes").upsert({entry_id: id, note: $("fNote").value.trim() || null})); }
+  if (err) { msg("Erro ao salvar. Confira os dados e tente novamente.", true); return; }
+  msg("Semana salva."); resetForm(); load();
+});
+
+$("fCancel").addEventListener("click", () => { resetForm(); msg(""); });
+
+$("cfg").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const {error} = await db.from("campaign").update({goal: parseFloat($("cGoal").value) || 100000, end_date: $("cEnd").value || C.end_date, opening: parseFloat($("cOpen").value) || 0}).eq("id", 1);
+  if (error) { msg("Erro ao salvar a campanha.", true); return; }
+  msg("Campanha atualizada."); load();
+});
+
+$("tbl").addEventListener("click", async ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  if (b.dataset.edit) {
+    const e = E.find(x => String(x.id) === b.dataset.edit); if (!e) return;
+    editId = e.id; $("fDate").value = e.week_date; $("fVal").value = e.value; $("fNote").value = notes[e.id] || ""; $("fJoy").value = e.joy || "";
+    $("formTitle").textContent = "Editar semana"; $("fBtn").textContent = "Salvar alterações"; $("fCancel").classList.remove("hidden");
+    $("form").scrollIntoView({behavior: "smooth"}); return;
+  }
+  if (b.dataset.del) {
+    if (b.dataset.arm) { const {error} = await db.from("entries").delete().eq("id", b.dataset.del); if (error) msg("Erro ao excluir.", true); else { msg("Lançamento excluído."); load(); } return; }
+    b.dataset.arm = "1"; b.textContent = "Confirmar exclusão"; b.classList.add("primary");
+    setTimeout(() => { if (b.isConnected) { delete b.dataset.arm; b.textContent = "Excluir"; b.classList.remove("primary"); } }, 4000);
+  }
+});
+
+(async () => {
+  resetForm();
+  const {data} = await db.auth.getSession();
+  if (data.session) setUser(data.session.user);
+  await load();
+  setInterval(load, 60000); // atualiza sozinho a cada 1 minuto (bom para o telão)
+})();
+</script>
+</body>
+</html>
